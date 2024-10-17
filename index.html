@@ -53,7 +53,8 @@
             padding: 1rem;
             text-align: center;
         }
-          /* CSS to position the image in the top-left */
+        
+        /* CSS to position the image in the top-left */
         img.logo {
             position: absolute;
             top: 10px;
@@ -67,7 +68,7 @@
     <img src="SHINETECH-300-Pixel-SVG.svg" alt="Shinetech Logo" class="logo">
 
     <header>
-        <h1>Dynamic Electricity price</h1>
+        <h1>Dynamic Electricity Price</h1>
     </header>
 
     <nav>
@@ -80,13 +81,13 @@
     <section>
         <h2>Current Dynamic Electricity Price</h2>
         <p id="datetime">
-            Here you will get the current dynamic electricity rate.It had been taken from the Tiber App.
+            Here you will get the current dynamic electricity rate. It had been taken from the Tiber App.
         </p>
     </section>
 
     <section>
-        <h2>Curent Electricity Rate</h2>
-        
+        <h2>Current Electricity Rate</h2>
+        <p id="electricity-price">Fetching the latest electricity price...</p>
     </section>
 
     <section>
@@ -99,7 +100,8 @@
     <footer>
         <p>&copy; 2024 My Website. All rights reserved.</p>
     </footer>
-<!-- JavaScript to display current date and time -->
+
+    <!-- JavaScript to display current date and time -->
     <script>
         function updateDateTime() {
             var now = new Date();
@@ -112,6 +114,56 @@
         updateDateTime();
         // Update the date and time every second
         setInterval(updateDateTime, 1000);
+
+        // Function to fetch electricity price from Tibber API
+        async function fetchElectricityPrice() {
+            const demoToken = "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE";  // Tibber demo token
+            const query = `
+                {
+                  viewer {
+                    homes {
+                      currentSubscription {
+                        priceInfo {
+                          current {
+                            total
+                            energy
+                            tax
+                            startsAt
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+            `;
+
+            try {
+                const response = await fetch('https://api.tibber.com/v1-beta/gql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${demoToken}`
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+                const priceInfo = data.data.viewer.homes[0].currentSubscription.priceInfo.current;
+                const price = priceInfo.total;  // Total price including tax and energy
+                const time = new Date(priceInfo.startsAt).toLocaleTimeString();
+
+                // Display the fetched price and time on the webpage
+                document.getElementById('electricity-price').innerHTML = `Current electricity price: ${price} EUR/kWh at ${time}`;
+            } catch (error) {
+                document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
+                console.error('Error:', error);
+            }
+        }
+
+        // Fetch the Tibber electricity price when the page loads
+        fetchElectricityPrice();
     </script>
+
 </body>
 </html>
+
