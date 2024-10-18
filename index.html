@@ -152,13 +152,13 @@
                 const price = priceInfo.total;  // Total price including tax and energy
                 const time = new Date(priceInfo.startsAt).toLocaleTimeString();
 
-                // Display the fetched price and time on the webpage
-                document.getElementById('electricity-price').innerHTML = `Current electricity price: ${price} EUR/kWh at ${time}`;
-            } catch (error) {
-                document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
-                console.error('Error:', error);
-            }
-        }
+               // Display the fetched price on the webpage (without time)
+        document.getElementById('electricity-price').innerHTML = `${price} EUR/kWh`;
+    } catch (error) {
+        document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
+        console.error('Error:', error);
+    }
+}
 
         // Fetch the Tibber electricity price when the page loads
         fetchElectricityPrice();
