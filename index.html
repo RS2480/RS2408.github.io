@@ -81,7 +81,7 @@
     <section>
         <h2>Current Dynamic Electricity Price</h2>
         <!-- Line added above date and time -->
-        <p>Here you will get the current dynamic electricity rate taken from the Tiber App.</p>
+        <p>Here you will get the current dynamic electricity price taken from the Tiber App.</p>
         <p id="datetime"></p>
         <p id="electricity-price">Fetching the latest electricity price...</p>
     </section>
@@ -151,7 +151,7 @@
                 const time = new Date(priceInfo.startsAt).toLocaleTimeString();
 
                // Display the fetched price on the webpage (without time)
-        document.getElementById('electricity-price').innerHTML = `${price} EUR/kWh`;
+       document.getElementById('electricity-price').innerHTML = `Current dynamic price: ${price} EUR/kWh`;
     } catch (error) {
         document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
         console.error('Error:', error);
