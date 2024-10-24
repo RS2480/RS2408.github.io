@@ -8,58 +8,59 @@
     <title>Shine dynamic price</title>
     <style>
        body {
-    font-family: Arial, sans-serif;
-    background-color: #E0F7FA; /* Lighter blue */
-    margin: 0;
-    padding: 0;
-}
+           font-family: Arial, sans-serif;
+           background-color: #E0F7FA; /* Lighter blue */
+           margin: 0;
+           padding: 0;
+       }
 
        header {
-    background-color: #B0E0E6; /* Powder Blue */
-    color: #000; /* Dark text for contrast */
-    padding: 1rem;
-    text-align: center;
-}
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: #444;
-            padding: 1rem;
-        }
+           background-color: #B0E0E6; /* Powder Blue */
+           color: #000; /* Dark text for contrast */
+           padding: 1rem;
+           text-align: center;
+       }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
+       nav {
+           display: flex;
+           justify-content: center;
+           background-color: #444;
+           padding: 1rem;
+       }
 
-        nav a:hover {
-            color: #ff9900;
-        }
+       nav a {
+           color: white;
+           text-decoration: none;
+           margin: 0 15px;
+           font-weight: bold;
+       }
 
-        section {
-            margin: 20px;
-            padding: 20px;
-            background: #87CEEB;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+       nav a:hover {
+           color: #ff9900;
+       }
 
-      footer {
-    background-color: #B0E0E6; /* Powder Blue */
-    color: #000; /* Dark text for contrast */
-    padding: 1rem;
-    text-align: center;
-}
-        
-        /* CSS to position the image in the top-left */
-        img.logo {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 200px; /* Adjust size as needed */
-        }
+       section {
+           margin: 20px;
+           padding: 20px;
+           background: #87CEEB;
+           border-radius: 8px;
+           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+       }
+
+       footer {
+           background-color: #B0E0E6; /* Powder Blue */
+           color: #000; /* Dark text for contrast */
+           padding: 1rem;
+           text-align: center;
+       }
+
+       /* CSS to position the image in the top-left */
+       img.logo {
+           position: absolute;
+           top: 20px;
+           left: 20px;
+           width: 200px; /* Adjust size as needed */
+       }
     </style>
 </head>
 <body>
@@ -84,8 +85,6 @@
         <p id="datetime"></p>
         <p id="electricity-price">Fetching the latest electricity price...</p>
     </section>
-
-
 
     <section>
         <h2>Contact Us</h2>
@@ -146,16 +145,17 @@
 
                 const data = await response.json();
                 const priceInfo = data.data.viewer.homes[0].currentSubscription.priceInfo.current;
-                const price = priceInfo.total;  // Total price including tax and energy
+                let price = priceInfo.total;  // Total price including tax and energy
+                price = (price * 100).toFixed(2);  // Convert EUR to Cents and format to 2 decimal places
                 const time = new Date(priceInfo.startsAt).toLocaleTimeString();
 
-               // Display the fetched price on the webpage (without time)
-       document.getElementById('electricity-price').innerHTML = `Current dynamic price: ${price} EUR/kWh`;
-    } catch (error) {
-        document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
-        console.error('Error:', error);
-    }
-}
+                // Display the fetched price on the webpage (now in Cents)
+                document.getElementById('electricity-price').innerHTML = `Current dynamic price: ${price} Cent/kWh`;
+            } catch (error) {
+                document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
+                console.error('Error:', error);
+            }
+        }
 
         // Fetch the Tibber electricity price when the page loads
         fetchElectricityPrice();
@@ -163,4 +163,3 @@
 
 </body>
 </html>
-
