@@ -189,19 +189,28 @@
             document.getElementById("inverter-voltage").textContent = `${voltage} V`;
             document.getElementById("inverter-current").textContent = `${current} A`;
 
-            // Determine behavior based on dynamic price
-            if (dynamicPrice < 20 && batteryLevel < 100) { // Charge from grid if price < 20 cents
+            // Determine behavior based on dynamic price and battery level
+            if (dynamicPrice < 20 && batteryLevel < 100) { 
+                // Charge from grid if price < 20 cents
                 document.getElementById("battery-status").textContent = "Charging from Grid";
                 document.getElementById("arrow-battery-inverter").textContent = "\u2190"; // Left arrow (Inverter to Battery)
                 document.getElementById("arrow-inverter-grid").textContent = "\u2190"; // Left arrow (Grid to Inverter)
                 document.getElementById("grid-status").textContent = "Connected";
-                document.getElementById("battery-level").textContent = batteryLevel < 100 ? batteryLevel + 1 : 100; // Increase battery level
-            } else { // Charge from inverter only if price >= 20 cents
+                document.getElementById("battery-level").textContent = batteryLevel < 100 ? batteryLevel + 1 : 100;
+            } else if (dynamicPrice >= 20 && batteryLevel >= 70) { 
+                // Discharge to grid if price >= 20 cents and battery >= 70%
+                document.getElementById("battery-status").textContent = "Discharging to Grid";
+                document.getElementById("arrow-battery-inverter").textContent = "\u2192"; // Right arrow (Battery to Inverter)
+                document.getElementById("arrow-inverter-grid").textContent = "\u2192"; // Right arrow (Inverter to Grid)
+                document.getElementById("grid-status").textContent = "Connected";
+                document.getElementById("battery-level").textContent = batteryLevel > 25 ? batteryLevel - 1 : 25; // Discharge until 25%
+            } else { 
+                // Charge from inverter if price >= 20 cents and battery < 70%
                 document.getElementById("battery-status").textContent = "Charging from Inverter";
                 document.getElementById("arrow-battery-inverter").textContent = "\u2190"; // Left arrow (Inverter to Battery)
                 document.getElementById("arrow-inverter-grid").textContent = ""; // No arrow from grid
                 document.getElementById("grid-status").textContent = "Disconnected";
-                document.getElementById("battery-level").textContent = batteryLevel < 100 ? batteryLevel + 1 : 100; // Increase battery level
+                document.getElementById("battery-level").textContent = batteryLevel < 100 ? batteryLevel + 1 : 100;
             }
         }
 
@@ -254,5 +263,4 @@
     </script>
 </body>
 </html>
-
 
