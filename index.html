@@ -160,11 +160,6 @@
         </div>
     </div>
 
-    <!-- Charge/Discharge Button -->
-    <div class="button-container">
-        <button onclick="toggleBatteryCharging()">Toggle Battery Charging/Discharging</button>
-    </div>
-
     <footer>
         <p>&copy; 2024 My Website. All rights reserved.</p>
     </footer>
@@ -181,12 +176,7 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
-        let isCharging = true;  // Initial state: Charging
-
-        function toggleBatteryCharging() {
-            isCharging = !isCharging; // Toggle charging state
-            updateInverterStatus();
-        }
+        let dynamicPrice = 0;  // Placeholder for dynamic price value
 
         function updateInverterStatus() {
             const power = (Math.random() * 5).toFixed(2); // Random power between 0 and 5 kW
@@ -194,27 +184,26 @@
             const current = (power / voltage * 1000).toFixed(1); // Calculate current based on power and voltage
             const batteryLevel = parseInt(document.getElementById("battery-level").textContent);
 
+            // Update inverter power, voltage, and current
             document.getElementById("inverter-power").textContent = `${power} kW`;
             document.getElementById("inverter-voltage").textContent = `${voltage} V`;
             document.getElementById("inverter-current").textContent = `${current} A`;
 
-            if (isCharging && batteryLevel < 100) {  // Charging
-                document.getElementById("battery-status").textContent = "Charging";
-                document.getElementById("arrow-battery-inverter").textContent = "\u2190"; // Arrow pointing left (Battery to Inverter)
-                document.getElementById("arrow-inverter-grid").textContent = ""; // No arrow between inverter and grid
-                document.getElementById("grid-status").textContent = "Disconnected";
-                document.getElementById("battery-level").textContent = batteryLevel + 1;
-            } else {  // Discharging
+            // Determine behavior based on dynamic price
+            if (dynamicPrice < 20 && batteryLevel > 0) { // Discharge to grid if price < 20 cents
                 document.getElementById("battery-status").textContent = "Discharging";
-                document.getElementById("arrow-battery-inverter").textContent = "\u21C4"; // Arrow pointing right (Battery to Inverter)
-                document.getElementById("arrow-inverter-grid").textContent = "\u2192"; // Arrow from inverter to grid
+                document.getElementById("arrow-battery-inverter").textContent = "\u21C4"; // Right arrow (Battery to Inverter)
+                document.getElementById("arrow-inverter-grid").textContent = "\u2192"; // Right arrow (Inverter to Grid)
                 document.getElementById("grid-status").textContent = "Connected";
-                document.getElementById("battery-level").textContent = batteryLevel > 0 ? batteryLevel - 1 : 0;
+                document.getElementById("battery-level").textContent = batteryLevel > 0 ? batteryLevel - 1 : 0; // Reduce battery level
+            } else { // Charge battery if price >= 20 cents
+                document.getElementById("battery-status").textContent = "Charging";
+                document.getElementById("arrow-battery-inverter").textContent = "\u2190"; // Left arrow (Inverter to Battery)
+                document.getElementById("arrow-inverter-grid").textContent = ""; // No arrow to grid
+                document.getElementById("grid-status").textContent = "Disconnected";
+                document.getElementById("battery-level").textContent = batteryLevel < 100 ? batteryLevel + 1 : 100; // Increase battery level
             }
         }
-
-        updateInverterStatus();
-        setInterval(updateInverterStatus, 2 * 60 * 1000);
 
         async function fetchElectricityPrice() {
             const demoToken = "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE";
@@ -249,11 +238,11 @@
 
                 const data = await response.json();
                 const priceInfo = data.data.viewer.homes[0].currentSubscription.priceInfo.current;
-                let price = priceInfo.total;
-                price = (price * 100).toFixed(2);
+                dynamicPrice = (priceInfo.total * 100).toFixed(2); // Convert EUR to Cent and store in dynamicPrice
                 const time = new Date(priceInfo.startsAt).toLocaleTimeString();
 
-                document.getElementById('electricity-price').innerHTML = `Current dynamic price: ${price} Cent/kWh`;
+                document.getElementById('electricity-price').innerHTML = `Current dynamic price: ${dynamicPrice} Cent/kWh`;
+                updateInverterStatus(); // Update inverter status based on new price
             } catch (error) {
                 document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
                 console.error('Error:', error);
@@ -261,6 +250,7 @@
         }
 
         fetchElectricityPrice();
+        setInterval(fetchElectricityPrice, 2 * 60 * 1000); // Update price and inverter status every 2 minutes
     </script>
 </body>
 </html>
