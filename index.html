@@ -85,28 +85,29 @@
            width: 200px;
        }
 
-       .button-container {
-           text-align: center;
-           margin-top: 20px;
-       }
-
-       .button-container button {
-           padding: 10px 20px;
-           font-size: 16px;
-           cursor: pointer;
-           background-color: #444;
+       /* Styling for the refresh button */
+       .refresh-button {
+           position: absolute;
+           top: 20px;
+           right: 20px;
+           padding: 10px 15px;
+           font-size: 14px;
            color: white;
+           background-color: #444;
            border: none;
            border-radius: 5px;
-           margin: 0 10px;
+           cursor: pointer;
        }
 
-       .button-container button:hover {
+       .refresh-button:hover {
            background-color: #333;
        }
     </style>
 </head>
 <body>
+    <!-- Refresh Button at Top-Right -->
+    <button onclick="refreshPage()" class="refresh-button">Refresh</button>
+
     <img src="SHINETECH-300-Pixel-SVG.svg" alt="Shinetech Logo" class="logo">
 
     <header>
@@ -173,6 +174,10 @@
             document.getElementById("datetime").innerHTML = "Current date and time: " + formattedDateTime;
         }
 
+        function refreshPage() {
+            location.reload(); // Reloads the page
+        }
+
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
@@ -191,21 +196,18 @@
 
             // Determine behavior based on dynamic price and battery level
             if (dynamicPrice < 20 && batteryLevel < 100) { 
-                // Charge from grid if price < 20 cents
                 document.getElementById("battery-status").textContent = "Charging from Grid";
                 document.getElementById("arrow-battery-inverter").textContent = "\u2190"; // Left arrow (Inverter to Battery)
                 document.getElementById("arrow-inverter-grid").textContent = "\u2190"; // Left arrow (Grid to Inverter)
                 document.getElementById("grid-status").textContent = "Connected";
                 document.getElementById("battery-level").textContent = batteryLevel < 100 ? batteryLevel + 1 : 100;
             } else if (dynamicPrice >= 20 && batteryLevel >= 70) { 
-                // Discharge to grid if price >= 20 cents and battery >= 70%
                 document.getElementById("battery-status").textContent = "Discharging to Grid";
                 document.getElementById("arrow-battery-inverter").textContent = "\u2192"; // Right arrow (Battery to Inverter)
                 document.getElementById("arrow-inverter-grid").textContent = "\u2192"; // Right arrow (Inverter to Grid)
                 document.getElementById("grid-status").textContent = "Connected";
-                document.getElementById("battery-level").textContent = batteryLevel > 25 ? batteryLevel - 1 : 25; // Discharge until 25%
+                document.getElementById("battery-level").textContent = batteryLevel > 25 ? batteryLevel - 1 : 25;
             } else { 
-                // Charge from inverter if price >= 20 cents and battery < 70%
                 document.getElementById("battery-status").textContent = "Charging from Inverter";
                 document.getElementById("arrow-battery-inverter").textContent = "\u2190"; // Left arrow (Inverter to Battery)
                 document.getElementById("arrow-inverter-grid").textContent = ""; // No arrow from grid
