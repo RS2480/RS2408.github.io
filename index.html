@@ -49,17 +49,26 @@
 
        .inverter-battery-grid {
            display: flex;
-           justify-content: space-between;
            align-items: center;
            padding: 20px;
            background-color: #B0E0E6; /* Powder Blue */
+           justify-content: space-between;
            margin-top: 20px;
        }
 
        .component {
            text-align: center;
            flex: 1;
-           margin: 0 20px;
+       }
+
+       .inverter {
+           position: relative;
+       }
+
+       .arrow {
+           font-size: 24px;
+           color: #333;
+           transition: transform 0.5s ease-in-out;
        }
 
        footer {
@@ -95,7 +104,6 @@
 
     <section>
         <h2>Current Dynamic Electricity Price</h2>
-        <!-- Line added above date and time -->
         <p>Here you will get the current dynamic electricity price taken from the Tibber App.</p>
         <p id="datetime"></p>
         <p id="electricity-price">Fetching the latest electricity price...</p>
@@ -108,19 +116,21 @@
         </p>
     </section>
 
-    <!-- New section for Inverter, Battery, and Grid -->
+    <!-- New section for Battery, Inverter, and Grid -->
     <div class="inverter-battery-grid">
         <div class="component">
-            <h3>5 kW Inverter</h3>
-            <p>Power: <span id="inverter-power">4500 W</span></p>
-            <p>Voltage: <span id="inverter-voltage">230 V</span></p>
-            <p>Current: <span id="inverter-current">20 A</span></p>
-        </div>
-        <div class="component">
-            <h3>5 kW Battery</h3>
+            <h3>10 kW Battery</h3>
             <p>Charge Level: <span id="battery-level">75%</span></p>
             <p>Status: <span id="battery-status">Charging</span></p>
         </div>
+
+        <div class="component inverter">
+            <h3>5 kW Inverter</h3>
+            <p>Power: <span id="inverter-power">0.0 kW</span></p>
+            <!-- Dynamic arrow -->
+            <p id="arrow" class="arrow">&#8594;</p> <!-- Right arrow by default -->
+        </div>
+
         <div class="component">
             <h3>Grid</h3>
             <p>Connected</p>
@@ -132,7 +142,7 @@
         <p>&copy; 2024 My Website. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript to display current date and time -->
+    <!-- JavaScript to display current date, time, and inverter functionality -->
     <script>
         function updateDateTime() {
             var now = new Date();
@@ -143,10 +153,30 @@
 
         // Update the date and time immediately when the page loads
         updateDateTime();
-        // Update the date and time every second
         setInterval(updateDateTime, 1000);
 
-        // Function to fetch electricity price from Tibber API
+        function updateInverterPower() {
+            const power = (Math.random() * 5).toFixed(2);  // Random power between 0 and 5 kW
+            const batteryLevel = parseInt(document.getElementById("battery-level").textContent);
+
+            document.getElementById("inverter-power").textContent = `${power} kW`;
+
+            // Determine charging/discharging and update arrow and battery status
+            if (batteryLevel < 100 && power > 2.5) {  // Arbitrary threshold for charging
+                document.getElementById("battery-status").textContent = "Charging";
+                document.getElementById("arrow").textContent = "\u2190";  // Left arrow
+                document.getElementById("battery-level").textContent = batteryLevel + 1;
+            } else {
+                document.getElementById("battery-status").textContent = "Discharging";
+                document.getElementById("arrow").textContent = "\u2192";  // Right arrow
+                document.getElementById("battery-level").textContent = batteryLevel > 0 ? batteryLevel - 1 : 0;
+            }
+        }
+
+        // Update inverter power and status every 2 minutes
+        updateInverterPower();
+        setInterval(updateInverterPower, 2 * 60 * 1000);
+
         async function fetchElectricityPrice() {
             const demoToken = "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE";  // Tibber demo token
             const query = `
@@ -180,11 +210,10 @@
 
                 const data = await response.json();
                 const priceInfo = data.data.viewer.homes[0].currentSubscription.priceInfo.current;
-                let price = priceInfo.total;  // Total price including tax and energy
-                price = (price * 100).toFixed(2);  // Convert EUR to Cents and format to 2 decimal places
+                let price = priceInfo.total;
+                price = (price * 100).toFixed(2);
                 const time = new Date(priceInfo.startsAt).toLocaleTimeString();
 
-                // Display the fetched price on the webpage (now in Cents)
                 document.getElementById('electricity-price').innerHTML = `Current dynamic price: ${price} Cent/kWh`;
             } catch (error) {
                 document.getElementById('electricity-price').innerHTML = 'Error fetching the electricity price.';
@@ -192,7 +221,6 @@
             }
         }
 
-        // Fetch the Tibber electricity price when the page loads
         fetchElectricityPrice();
     </script>
 </body>
