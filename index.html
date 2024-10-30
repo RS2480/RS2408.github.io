@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Welcome to my personal website!">
-    <title>Shine dynamic price</title>
+    <title>Shine Dynamic Price</title>
     <style>
        body {
            font-family: Arial, sans-serif;
@@ -47,6 +47,21 @@
            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
        }
 
+       .inverter-battery-grid {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           padding: 20px;
+           background-color: #B0E0E6; /* Powder Blue */
+           margin-top: 20px;
+       }
+
+       .component {
+           text-align: center;
+           flex: 1;
+           margin: 0 20px;
+       }
+
        footer {
            background-color: #B0E0E6; /* Powder Blue */
            color: #000; /* Dark text for contrast */
@@ -64,7 +79,7 @@
     </style>
 </head>
 <body>
-   <!-- Add the image here -->
+    <!-- Add the image here -->
     <img src="SHINETECH-300-Pixel-SVG.svg" alt="Shinetech Logo" class="logo">
 
     <header>
@@ -92,6 +107,26 @@
             Reach us at <a href="mailto:info@shinetech.com.com">info@shinetech.de</a>
         </p>
     </section>
+
+    <!-- New section for Inverter, Battery, and Grid -->
+    <div class="inverter-battery-grid">
+        <div class="component">
+            <h3>5 kW Inverter</h3>
+            <p>Power: <span id="inverter-power">4500 W</span></p>
+            <p>Voltage: <span id="inverter-voltage">230 V</span></p>
+            <p>Current: <span id="inverter-current">20 A</span></p>
+        </div>
+        <div class="component">
+            <h3>10 kW Battery</h3>
+            <p>Charge Level: <span id="battery-level">75%</span></p>
+            <p>Status: <span id="battery-status">Charging</span></p>
+        </div>
+        <div class="component">
+            <h3>Grid</h3>
+            <p>Connected</p>
+            <img src="grid-symbol.svg" alt="Grid Symbol" style="width: 50px;">
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2024 My Website. All rights reserved.</p>
@@ -160,6 +195,6 @@
         // Fetch the Tibber electricity price when the page loads
         fetchElectricityPrice();
     </script>
-
 </body>
 </html>
+
