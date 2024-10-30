@@ -66,29 +66,97 @@
        }
 
        .arrow {
+           font-size: 24px;<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welcome to my personal website!">
+    <title>Shine Dynamic Price</title>
+    <style>
+       body {
+           font-family: Arial, sans-serif;
+           background-color: #E0F7FA;
+           margin: 0;
+           padding: 0;
+       }
+
+       header {
+           background-color: #B0E0E6;
+           color: #000;
+           padding: 1rem;
+           text-align: center;
+       }
+
+       nav {
+           display: flex;
+           justify-content: center;
+           background-color: #444;
+           padding: 1rem;
+       }
+
+       nav a {
+           color: white;
+           text-decoration: none;
+           margin: 0 15px;
+           font-weight: bold;
+       }
+
+       nav a:hover {
+           color: #ff9900;
+       }
+
+       section {
+           margin: 20px;
+           padding: 20px;
+           background: #87CEEB;
+           border-radius: 8px;
+           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+       }
+
+       .inverter-battery-grid {
+           display: flex;
+           align-items: center;
+           padding: 20px;
+           background-color: #B0E0E6;
+           justify-content: space-between;
+           margin-top: 20px;
+       }
+
+       .component {
+           text-align: center;
+           flex: 1;
+       }
+
+       .inverter {
+           position: relative;
+       }
+
+       .arrow {
            font-size: 24px;
            color: #333;
            transition: transform 0.5s ease-in-out;
        }
 
        footer {
-           background-color: #B0E0E6; /* Powder Blue */
-           color: #000; /* Dark text for contrast */
+           background-color: #B0E0E6;
+           color: #000;
            padding: 1rem;
            text-align: center;
        }
 
-       /* CSS to position the image in the top-left */
+       /* Position the logo */
        img.logo {
            position: absolute;
            top: 20px;
            left: 20px;
-           width: 200px; /* Adjust size as needed */
+           width: 200px;
        }
     </style>
 </head>
 <body>
-    <!-- Add the image here -->
+    <!-- Logo image -->
     <img src="SHINETECH-300-Pixel-SVG.svg" alt="Shinetech Logo" class="logo">
 
     <header>
@@ -111,29 +179,32 @@
 
     <section>
         <h2>Contact Us</h2>
-        <p>
-            Reach us at <a href="mailto:info@shinetech.com.com">info@shinetech.de</a>
-        </p>
+        <p>Reach us at <a href="mailto:info@shinetech.com.com">info@shinetech.de</a></p>
     </section>
 
-    <!-- New section for Battery, Inverter, and Grid -->
+    <!-- Section for Battery, Inverter, and Grid -->
     <div class="inverter-battery-grid">
+        <!-- Battery Component -->
         <div class="component">
-            <h3>10 kW Battery</h3>
+            <h3>5 kW Battery</h3>
             <p>Charge Level: <span id="battery-level">75%</span></p>
-            <p>Status: <span id="battery-status">Charging</span></p>
+            <p>Status: <span id="battery-status">Disconnected</span></p>
         </div>
 
+        <!-- Inverter Component -->
         <div class="component inverter">
             <h3>5 kW Inverter</h3>
             <p>Power: <span id="inverter-power">0.0 kW</span></p>
+            <p>Voltage: <span id="inverter-voltage">230 V</span></p>
+            <p>Current: <span id="inverter-current">0 A</span></p>
             <!-- Dynamic arrow -->
-            <p id="arrow" class="arrow">&#8594;</p> <!-- Right arrow by default -->
+            <p id="arrow" class="arrow">&#8594;</p>
         </div>
 
+        <!-- Grid Component -->
         <div class="component">
             <h3>Grid</h3>
-            <p>Connected</p>
+            <p id="grid-status">Disconnected</p>
             <img src="https://raw.githubusercontent.com/RS2480/RS2480.github.io/main/grid.jpg" alt="Grid Symbol" style="width: 50px;">
         </div>
     </div>
@@ -142,7 +213,7 @@
         <p>&copy; 2024 My Website. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript to display current date, time, and inverter functionality -->
+    <!-- JavaScript for dynamic date, time, and inverter functionality -->
     <script>
         function updateDateTime() {
             var now = new Date();
@@ -155,30 +226,37 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
-        function updateInverterPower() {
-            const power = (Math.random() * 5).toFixed(2);  // Random power between 0 and 5 kW
+        function updateInverterStatus() {
+            const power = (Math.random() * 5).toFixed(2); // Random power between 0 and 5 kW
+            const voltage = 230; // Fixed voltage for display
+            const current = (power / voltage * 1000).toFixed(1); // Calculate current based on power and voltage
             const batteryLevel = parseInt(document.getElementById("battery-level").textContent);
 
+            // Update inverter power, voltage, and current
             document.getElementById("inverter-power").textContent = `${power} kW`;
+            document.getElementById("inverter-voltage").textContent = `${voltage} V`;
+            document.getElementById("inverter-current").textContent = `${current} A`;
 
-            // Determine charging/discharging and update arrow and battery status
-            if (batteryLevel < 100 && power > 2.5) {  // Arbitrary threshold for charging
+            // Determine charging/discharging status, update arrow, battery level, and grid status
+            if (batteryLevel < 100 && power > 2.5) { // Charging condition
                 document.getElementById("battery-status").textContent = "Charging";
-                document.getElementById("arrow").textContent = "\u2190";  // Left arrow
-                document.getElementById("battery-level").textContent = batteryLevel + 1;
-            } else {
+                document.getElementById("arrow").textContent = "\u2190"; // Arrow pointing left (inverter to battery)
+                document.getElementById("grid-status").textContent = "Disconnected";
+                document.getElementById("battery-level").textContent = batteryLevel + 1; // Increase battery level
+            } else { // Discharging condition
                 document.getElementById("battery-status").textContent = "Discharging";
-                document.getElementById("arrow").textContent = "\u2192";  // Right arrow
-                document.getElementById("battery-level").textContent = batteryLevel > 0 ? batteryLevel - 1 : 0;
+                document.getElementById("arrow").textContent = "\u21C4"; // Bi-directional arrow (battery to inverter to grid)
+                document.getElementById("grid-status").textContent = "Connected";
+                document.getElementById("battery-level").textContent = batteryLevel > 0 ? batteryLevel - 1 : 0; // Decrease battery level
             }
         }
 
-        // Update inverter power and status every 2 minutes
-        updateInverterPower();
-        setInterval(updateInverterPower, 2 * 60 * 1000);
+        // Update inverter status and arrow every 2 minutes
+        updateInverterStatus();
+        setInterval(updateInverterStatus, 2 * 60 * 1000);
 
         async function fetchElectricityPrice() {
-            const demoToken = "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE";  // Tibber demo token
+            const demoToken = "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE";
             const query = `
                 {
                   viewer {
